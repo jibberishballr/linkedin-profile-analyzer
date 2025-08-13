@@ -46,11 +46,34 @@ function getExperience() {
 }
 
 
-// Send the extracted data to the background script.
-chrome.runtime.sendMessage({
-  profileData: {
+// Send the extracted data to the backend service for analysis.
+async function analyzeProfile() {
+  const profileData = {
     name: getProfileName(),
     ...getJobTitleAndCompany(),
     ...getExperience()
+  };
+
+  try {
+    const response = await fetch('https://jibberishballr--linkedin-analyzer-backend-run.modal.run/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(profileData)
+    });
+
+    if (response.ok) {
+      const analysis = await response.json();
+      // Send the analysis results to the background script.
+      chrome.runtime.sendMessage({ profileData: analysis });
+    } else {
+      console.error('Error analyzing profile:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error analyzing profile:', error);
   }
-});
+}
+
+analyzeProfile();
+
