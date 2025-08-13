@@ -22,7 +22,7 @@ function getJobTitleAndCompany() {
 function getExperience() {
   const experienceSection = document.getElementById('experience');
   if (!experienceSection) {
-    return { experience: 'Experience section not found' };
+    return { experience: [] }; // Return an empty array if not found
   }
 
   const experienceItems = experienceSection.querySelectorAll('.pvs-entity');
@@ -65,10 +65,11 @@ async function analyzeProfile() {
 
     if (response.ok) {
       const analysis = await response.json();
+      console.log("Received analysis from backend:", analysis);
       // Send the analysis results to the background script.
       chrome.runtime.sendMessage({ profileData: analysis });
     } else {
-      console.error('Error analyzing profile:', response.statusText);
+      console.error('Error analyzing profile:', response.status, await response.text());
     }
   } catch (error) {
     console.error('Error analyzing profile:', error);

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log("Received message in analyzer:", request);
     if (request.profileData) {
       updateAnalyzerUI(request.profileData);
     }
@@ -7,7 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateAnalyzerUI(data) {
-  // For now, we'll just display the raw data.
-  // In the future, this will be parsed and displayed in the correct sections.
-  document.getElementById('connection-score').textContent = JSON.stringify(data, null, 2);
+  if (data.connection_probability) {
+    const score = Math.round(data.connection_probability * 100);
+    document.getElementById('connection-score').textContent = `${score}%`;
+  }
+  if (data.contact_info) {
+    document.getElementById('contact-info').textContent = data.contact_info.email || 'Not found';
+  }
+  // Placeholder for engagement analytics
+  document.getElementById('engagement-analytics').textContent = 'Coming soon...';
 }
