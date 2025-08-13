@@ -9,7 +9,7 @@ backend_script_remote_path = str(PurePosixPath("/root/main.py"))
 
 image = (
     modal.Image.debian_slim(python_version="3.11")
-    .pip_install("fastapi", "uvicorn", "scikit-learn", "requests")
+    .pip_install("fastapi", "uvicorn", "scikit-learn", "requests", "python-multipart")
     .add_local_file(backend_script_local_path, backend_script_remote_path)
 )
 

@@ -5,11 +5,26 @@ from pydantic import BaseModel
 from sklearn.linear_model import LogisticRegression
 import numpy as np
 import requests
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 secret = modal.Secret.from_name("hunter-api-key")
 
 app = FastAPI()
+
+origins = [
+    "https://www.linkedin.com",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # Sample data for training the model
 # In a real application, this would be a much larger and more comprehensive dataset.
