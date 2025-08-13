@@ -13,9 +13,7 @@ secret = modal.Secret.from_name("hunter-api-key")
 
 app = FastAPI()
 
-origins = [
-    "https://www.linkedin.com",
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
