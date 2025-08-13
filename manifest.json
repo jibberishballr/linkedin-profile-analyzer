@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Subscribe Extension",
+  "version": "1.0",
+  "description": "A simple subscription extension.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
