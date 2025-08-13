@@ -18,6 +18,7 @@ app = modal.App(name="linkedin-analyzer-backend", image=image)
 # Define the web server function
 @app.function(
     allow_concurrent_inputs=100,
+    secrets=[modal.Secret.from_name("hunter-api-key")],
 )
 @modal.web_server(8000)
 def run():

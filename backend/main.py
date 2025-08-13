@@ -1,8 +1,13 @@
 from fastapi import FastAPI
+import modal
+
 from pydantic import BaseModel
 from sklearn.linear_model import LogisticRegression
 import numpy as np
 import requests
+
+
+secret = modal.Secret.from_name("hunter-api-key")
 
 app = FastAPI()
 
@@ -21,10 +26,10 @@ class ProfileData(BaseModel):
     company: str
     experience: list
 
-HUNTER_API_KEY = "8f6c494b052a12952a708340ed5583a1c4992eb4"
 
-def get_verified_email(name: str, company: str):
-    url = f"https://api.hunter.io/v2/email-finder?company={company}&full_name={name}&api_key={HUNTER_API_KEY}"
+
+def get_verified_email(name: str, company: str, api_key: str):
+    url = f"https://api.hunter.io/v2/email-finder?company={company}&full_name={name}&api_key={api_key}"
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
@@ -42,12 +47,18 @@ async def analyze_profile(data: ProfileData):
     connection_probability = model.predict_proba(features)[0][1]
 
     # Get the verified email address
-    email = get_verified_email(data.name, data.company)
+    email = get_verified_email(data.name, data.company, api_key)
 
     contact_info = {
         "email": email,
         "phone": "123-456-7890"  # Placeholder for phone number
     }
+
+    try:
+        api_key = secret["HUNTER_API_KEY"]
+    except modal.exception.NotFoundError:
+        email = "Hunter API key not found in Modal secrets."
+        api_key = None # Set api_key to None if not found
 
     return {
         "connection_probability": connection_probability,

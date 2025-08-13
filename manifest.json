@@ -13,8 +13,8 @@
       "matches": ["https://www.linkedin.com/in/*"],
       "js": ["content.js"]
     }
+  ],
   "side_panel": {
     "default_path": "analyzer.html"
-  },
-  ]
+  }
 }
